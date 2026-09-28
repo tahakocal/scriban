@@ -573,5 +573,42 @@ namespace Scriban.Tests
                 TestParser.AssertTemplate("text(1,4) : error : minValue must be greater than maxValue", "{{ math.random 11 10 }}");
             }
         }
+
+        public class TimeSpans
+        {
+            [Test]
+            public void TestAddTimeSpans()
+            {
+                TestParser.AssertTemplate("90", @"{{ ((timespan.from_hours 1) + (timespan.from_minutes 30)).total_minutes }}");
+            }
+
+            [Test]
+            public void TestSubtractTimeSpans()
+            {
+                TestParser.AssertTemplate("30", @"{{ ((timespan.from_hours 1) - (timespan.from_minutes 30)).total_minutes }}");
+            }
+
+            [Test]
+            public void TestCompareTimeSpans()
+            {
+                TestParser.AssertTemplate("true", @"{{ (timespan.from_hours 2) > (timespan.from_hours 1) }}");
+                TestParser.AssertTemplate("true", @"{{ (timespan.from_hours 1) < (timespan.from_hours 2) }}");
+                TestParser.AssertTemplate("true", @"{{ (timespan.from_hours 1) >= (timespan.from_minutes 60) }}");
+                TestParser.AssertTemplate("true", @"{{ (timespan.from_hours 1) <= (timespan.from_minutes 60) }}");
+            }
+
+            [Test]
+            public void TestEqualTimeSpans()
+            {
+                TestParser.AssertTemplate("true", @"{{ (timespan.from_hours 1) == (timespan.from_minutes 60) }}");
+                TestParser.AssertTemplate("true", @"{{ (timespan.from_hours 1) != (timespan.from_minutes 30) }}");
+            }
+
+            [Test]
+            public void TestTimeSpanDifferenceBetweenDates()
+            {
+                TestParser.AssertTemplate("2", @"{{ (((date.parse ""2026-01-03"") - (date.parse ""2026-01-01"")) + (timespan.from_hours 1)).days }}");
+            }
+        }
     }
 }

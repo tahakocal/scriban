@@ -47,6 +47,7 @@ The language rules are the same in a pure scripting context.
   - [8.4 Arithmetic expressions](#84-arithmetic-expressions)
     - [On numbers](#on-numbers)
     - [On strings](#on-strings)
+    - [On timespans](#on-timespans)
   - [8.5 Conditional expressions](#85-conditional-expressions)
   - [8.6 Unary expressions](#86-unary-expressions)
   - [8.7 Range expressions](#87-range-expressions)
@@ -907,6 +908,31 @@ The following literals are converted to plain strings:
 * `false -> "false"`
 
 
+#### On timespans
+
+The following binary operators are supported for **timespans**:
+
+|Operator            | Description
+|--------------------|------------
+| `<left> + <right>` | add left to right timespan
+| `<left> - <right>` | subtract right timespan from left
+
+A timespan is produced by the [`timespan` functions](builtins/timespan.md) or by subtracting two dates:
+
+> **input**
+```scriban-html
+{{ "{{" }} ((timespan.from_hours 1) + (timespan.from_minutes 30)).total_minutes {{ "}}" }}
+{{ "{{" }} ((date.parse "2026-01-03") - (date.parse "2026-01-01")).days {{ "}}" }}
+```
+> **output**
+```html
+90
+2
+```
+
+Timespans can also be compared with the [conditional operators](#85-conditional-expressions). Multiplying or dividing a timespan by a number is not supported.
+
+
 ### 8.5 Conditional expressions
 
 A boolean expression produces a boolean by comparing a left and right value.
@@ -920,7 +946,7 @@ A boolean expression produces a boolean by comparing a left and right value.
 | `<left> < <right>`  | Is left less than right?
 | `<left> <= <right>` | Is left less or equal to right?
 
-They work with both `numbers`, `strings` and datetimes.
+They work with `numbers`, `strings`, datetimes and timespans.
 
 You can combine conditional expressions with `&&` (and operator) and `||` (or operator).
 Unlike in `javascript` it always returns `boolean` and never `<left>` or `<right>`.

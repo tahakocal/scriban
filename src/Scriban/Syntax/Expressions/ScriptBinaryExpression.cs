@@ -682,6 +682,11 @@ namespace Scriban.Syntax
                 return CalculateDateTime(op, span, (DateTime)leftValue, (TimeSpan)rightValue);
             }
 
+            if (leftType == typeof(TimeSpan) && rightType == typeof(TimeSpan))
+            {
+                return CalculateTimeSpan(op, span, (TimeSpan)leftValue, (TimeSpan)rightValue);
+            }
+
             //allows to check equality for objects with not only primitive types
             if (op == ScriptBinaryOperator.CompareEqual)
             {
@@ -1072,6 +1077,31 @@ namespace Scriban.Syntax
             }
 
             throw new ScriptRuntimeException(span, $"The operator `{op}` is not supported for between <DateTime> and <TimeSpan>");
+        }
+
+        private static object CalculateTimeSpan(ScriptBinaryOperator op, SourceSpan span, TimeSpan left, TimeSpan right)
+        {
+            switch (op)
+            {
+                case ScriptBinaryOperator.Add:
+                    return left + right;
+                case ScriptBinaryOperator.Subtract:
+                    return left - right;
+                case ScriptBinaryOperator.CompareEqual:
+                    return left == right;
+                case ScriptBinaryOperator.CompareNotEqual:
+                    return left != right;
+                case ScriptBinaryOperator.CompareLess:
+                    return left < right;
+                case ScriptBinaryOperator.CompareLessOrEqual:
+                    return left <= right;
+                case ScriptBinaryOperator.CompareGreater:
+                    return left > right;
+                case ScriptBinaryOperator.CompareGreaterOrEqual:
+                    return left >= right;
+            }
+
+            throw new ScriptRuntimeException(span, $"The operator `{op}` is not supported for TimeSpan");
         }
 
         private static object CalculateBool(ScriptBinaryOperator op, SourceSpan span, bool left, bool right)
